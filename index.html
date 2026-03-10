@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="robots" content="noindex"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CariWell — Treatment Consent</title>
+
+<style>
+:root{--teal:#00897B;--teal-d:#00695C;--teal-l:#E0F2F1;--teal-m:#B2DFDB;--dark:#0D1F1C;--ink:#1C2E2B;--muted:#5E7A75;--border:#C8DDD9;--bg:#F4F8F7;--white:#fff;--gold:#C9A84C;--red:#B00020;--r:7px;--sh:0 2px 20px rgba(0,137,123,.09)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;min-height:100vh}
+.hdr{background:var(--dark);color:#fff;text-align:center;padding:22px 16px 18px;position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 0%,rgba(0,137,123,.4),transparent 55%),radial-gradient(ellipse at 80% 110%,rgba(201,168,76,.13),transparent 50%);pointer-events:none}
+.hdr-logo{font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:300;letter-spacing:.05em;position:relative}
+.hdr-logo b{color:#fff;font-weight:600}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px;position:relative}
+.title-bar{background:var(--teal);color:#fff;text-align:center;padding:10px;font-family:Georgia,'Times New Roman',serif;font-size:16px;letter-spacing:.14em;text-transform:uppercase}
+.shell{max-width:820px;margin:0 auto;padding:24px 16px 60px}
+.prog-wrap{display:flex;align-items:center;gap:5px;margin-bottom:22px}
+.prog-step{flex:1;height:3px;background:var(--border);border-radius:2px;transition:background .35s}
+.prog-step.done{background:var(--teal)}.prog-step.active{background:var(--gold)}
+.prog-lbl{font-size:11px;color:var(--muted);white-space:nowrap;padding-left:6px}
+.card{background:var(--white);border-radius:10px;box-shadow:var(--sh);border:1px solid var(--border);margin-bottom:16px;display:none;animation:fu .3s ease}
+.card.on{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card-hd{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;padding:13px 20px;display:flex;align-items:center;gap:11px}
+.badge{background:rgba(255,255,255,.2);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.card-hd h2{font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:400;letter-spacing:.03em}
+.card-hd p{font-size:11px;opacity:.72;margin-top:1px}
+.card-bd{padding:18px 20px 22px}
+.hcp-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,var(--teal-l),#f0faf9);border:1px solid var(--teal-m);border-radius:var(--r);padding:12px 16px;margin-bottom:18px}
+.hcp-avatar{width:38px;height:38px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:15px;flex-shrink:0}
+.hcp-name{font-weight:500;font-size:14px;color:var(--teal-d)}
+.hcp-sub{font-size:11.5px;color:var(--muted)}
+.hcp-edit{margin-left:auto;font-size:11.5px;color:var(--teal);cursor:pointer;text-decoration:underline;white-space:nowrap;background:none;border:none;font-family:inherit}
+.fg{margin-bottom:14px}
+.fg>label{display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.fg label .req{color:var(--red)}
+input[type=text],input[type=date],input[type=email],select,textarea{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:var(--r);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;color:var(--ink);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,137,123,.11)}
+textarea{resize:vertical;min-height:56px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:560px){.r2,.r3{grid-template-columns:1fr}}
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.goal-grid{grid-template-columns:1fr}}
+.goal-tile{border:1.5px solid var(--border);border-radius:var(--r);padding:10px 12px 10px 40px;cursor:pointer;position:relative;transition:all .15s;user-select:none}
+.goal-tile:hover{border-color:var(--teal-m);background:var(--teal-l)}
+.goal-tile.sel{border-color:var(--teal);background:var(--teal-l);box-shadow:0 0 0 2px rgba(0,137,123,.12)}
+.goal-tile .chk{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;border:2px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;color:#fff}
+.goal-tile.sel .chk{background:var(--teal);border-color:var(--teal)}
+.goal-tile .gt{font-weight:500;font-size:13px}
+.goal-tile .gd{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.35}
+.reg-section-label{font-size:10.5px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 6px;padding-bottom:3px;border-bottom:1px solid var(--teal-l)}
+.reg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:7px;margin-bottom:4px}
+.reg-tile{border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;cursor:pointer;transition:all .15s;user-select:none;position:relative}
+.reg-tile:hover{border-color:var(--teal-m);background:var(--teal-l)}
+.reg-tile.sel{border-color:var(--teal);background:var(--teal-l);box-shadow:0 0 0 2px rgba(0,137,123,.12)}
+.reg-tile .rn{font-weight:500;font-size:13px;color:var(--ink)}
+.reg-tile .rt{font-size:10.5px;color:var(--muted);margin-top:1px}
+.reg-tile .rc{position:absolute;top:7px;right:8px;width:16px;height:16px;background:var(--teal);border-radius:50%;display:none;align-items:center;justify-content:center;color:#fff;font-size:9px}
+.reg-tile.sel .rc{display:flex}
+.route-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px}
+.rchip{display:flex;align-items:center;gap:5px;padding:5px 13px;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;transition:all .15s;user-select:none}
+.rchip:hover{border-color:var(--teal)}.rchip.sel{border-color:var(--teal);background:var(--teal);color:#fff}
+.se-hint{background:var(--teal-l);border-left:3px solid var(--teal);padding:9px 13px;border-radius:0 var(--r) var(--r) 0;font-size:12px;color:var(--teal-d);margin-bottom:14px;line-height:1.5}
+.se-glabel{font-size:10.5px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;padding:7px 0 4px;border-bottom:1px solid var(--teal-l);margin-bottom:7px}
+.se-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px}
+@media(max-width:560px){.se-grid{grid-template-columns:1fr 1fr}}
+.se-chip{display:flex;align-items:center;gap:7px;padding:6px 9px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:12px;transition:all .15s;user-select:none}
+.se-chip:hover{border-color:var(--teal-m);background:var(--teal-l)}
+.se-chip.sel{border-color:var(--teal);background:var(--teal-l);color:var(--teal);font-weight:500}
+.se-chip .dot{width:13px;height:13px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;transition:all .15s}
+.se-chip.sel .dot{background:var(--teal);border-color:var(--teal)}
+.decl{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-bottom:1px solid var(--teal-l);cursor:pointer;user-select:none}
+.decl:last-child{border-bottom:none}
+.dbox{width:20px;height:20px;flex-shrink:0;border:2px solid var(--border);border-radius:4px;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px;color:#fff}
+.decl.chk .dbox{background:var(--teal);border-color:var(--teal)}
+.dtext{font-size:13px;line-height:1.5}
+.sig-wrap{border:1.5px dashed var(--border);border-radius:var(--r);height:90px;position:relative;background:#FAFFFE;cursor:crosshair;overflow:hidden}
+.sig-wrap canvas{position:absolute;inset:0;width:100%;height:100%}
+.sig-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--border);font-style:italic;pointer-events:none}
+.sig-clr{position:absolute;top:5px;right:7px;font-size:11px;color:var(--muted);cursor:pointer;background:#fff;border:1px solid var(--border);border-radius:4px;padding:2px 7px;display:none;z-index:2}
+.sig-clr:hover{color:var(--red);border-color:var(--red)}
+.sig-toggle{display:flex;gap:0;margin-bottom:6px;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;width:fit-content}
+.sig-toggle button{padding:5px 14px;font-size:11.5px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;border:none;background:#fff;color:var(--muted);cursor:pointer;transition:all .15s}
+.sig-toggle button.active{background:var(--teal);color:#fff}
+.sig-type{display:none;width:100%;padding:8px 12px;border:1.5px dashed var(--border);border-radius:var(--r);font-family:Georgia,'Times New Roman',serif;font-size:22px;font-style:italic;color:var(--ink);background:#FAFFFE;outline:none;min-height:54px}
+.sig-type:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(0,137,123,.11)}
+.sig-type::placeholder{font-size:13px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-style:normal;color:var(--border)}
+.wf-row{display:flex;gap:10px;margin-top:6px}
+.wf-btn{flex:1;padding:12px 10px;border:1.5px solid var(--border);border-radius:var(--r);cursor:pointer;text-align:center;transition:all .2s;user-select:none}
+.wf-btn:hover{border-color:var(--teal-m);background:var(--teal-l)}
+.wf-btn.sel{border-color:var(--teal);background:var(--teal-l);box-shadow:0 0 0 2px rgba(0,137,123,.12)}
+.wf-icon{font-size:22px;margin-bottom:3px}
+.wf-title{font-weight:500;font-size:13px;color:var(--ink)}
+.wf-sub{font-size:11.5px;color:var(--muted)}
+.dvd{height:1px;background:var(--teal-l);margin:16px 0}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}
+.btn{padding:10px 26px;border-radius:var(--r);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+.btn-pri{background:var(--teal);color:#fff;box-shadow:0 3px 12px rgba(0,137,123,.28)}.btn-pri:hover{background:var(--teal-d);transform:translateY(-1px)}
+.btn-sub{background:var(--dark);color:#fff;box-shadow:0 3px 12px rgba(13,31,28,.22)}.btn-sub:hover{background:#162924;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#fff;box-shadow:0 3px 12px rgba(201,168,76,.28)}.btn-gold:hover{transform:translateY(-1px)}
+.pat-summary{background:var(--teal-l);border:1px solid var(--teal-m);border-radius:var(--r);padding:14px 16px;margin-bottom:18px}
+.pat-summary h3{font-family:Georgia,'Times New Roman',serif;font-size:17px;color:var(--teal-d);margin-bottom:8px;font-weight:600}
+.ps-row{display:flex;gap:8px;font-size:13px;padding:4px 0;border-bottom:1px dotted var(--teal-m)}
+.ps-row:last-child{border:none}.ps-k{color:var(--muted);min-width:130px;flex-shrink:0}.ps-v{font-weight:500;color:var(--ink)}
+.ps-tags{display:flex;flex-wrap:wrap;gap:4px}
+.ps-tag{background:#fff;color:var(--teal);font-size:11px;padding:2px 8px;border-radius:20px;border:1px solid var(--teal-m)}
+.overlay{display:none;text-align:center;padding:52px 20px;background:#fff;border-radius:10px;border:1px solid var(--border);box-shadow:var(--sh)}
+.spin{width:52px;height:52px;border:3px solid var(--teal-l);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay h2{font-family:Georgia,'Times New Roman',serif;font-size:24px;color:var(--dark);font-weight:400;margin-bottom:6px}
+.overlay p{color:var(--muted);font-size:13px;max-width:400px;margin:0 auto 20px}
+.success-icon{width:68px;height:68px;background:var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:30px;color:#fff;box-shadow:0 6px 24px rgba(0,137,123,.32)}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.info-box{background:var(--teal-l);border-left:3px solid var(--teal);padding:10px 14px;border-radius:0 var(--r) var(--r) 0;font-size:12px;color:var(--teal-d);margin-bottom:14px;line-height:1.6}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border-radius:10px;padding:24px;width:100%;max-width:440px;box-shadow:0 8px 40px rgba(0,0,0,.18)}
+.modal h3{font-family:Georgia,'Times New Roman',serif;font-size:20px;color:var(--dark);margin-bottom:16px;font-weight:600}
+.modal-btns{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+</style>
+</head>
+<body>
+
+<div class="modal-bg" id="profileModal">
+  <div class="modal">
+    <h3>Your Details</h3>
+    <div class="fg"><label>Full name</label><input type="text" id="m_name" placeholder="Dr. Trena Stoute"/></div>
+    <div class="fg"><label>Job title</label><input type="text" id="m_title" placeholder="Medical Oncologist"/></div>
+    <div class="fg"><label>Your email (completed forms sent here)</label><input type="email" id="m_email" placeholder="you@cariwell.health"/></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-pri" onclick="saveProfile()">Save</button>
+    </div>
+  </div>
+</div>
+
+<header class="hdr">
+  <div class="hdr-logo">Cari<b>Well</b> Health Inc.</div>
+  <div class="hdr-sub">#36 Pine Road, Belleville, St. Michael, Barbados &nbsp;·&nbsp; 246-537-8483 &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="294a485b4c694a485b405e4c454507414c48455d41">[email&#160;protected]</a></div>
+</header>
+<div class="title-bar">Treatment Consent Form</div>
+
+<div class="shell">
+
+  <div class="prog-wrap" id="progBar">
+    <div class="prog-step active" id="ps0"></div>
+    <div class="prog-step" id="ps1"></div>
+    <div class="prog-step" id="ps2"></div>
+    <div class="prog-step" id="ps3"></div>
+    <div class="prog-lbl" id="progLbl">Step 1 of 4</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card on" id="s0">
+    <div class="card-hd"><div class="badge">1</div><div><h2>Treatment Details</h2><p>Patient info + treatment plan</p></div></div>
+    <div class="card-bd">
+      <div class="hcp-banner" id="hcpBanner">
+        <div class="hcp-avatar" id="hcpAvatar">?</div>
+        <div><div class="hcp-name" id="hcpName">Set up your profile</div><div class="hcp-sub" id="hcpSub">Saved once — never re-enter</div></div>
+        <button class="hcp-edit" onclick="openModal()">Edit</button>
+      </div>
+      <div class="dvd"></div>
+      <div class="r2">
+        <div class="fg"><label>Patient surname <span class="req">*</span></label><input type="text" id="pat_sn" placeholder="Last name"/></div>
+        <div class="fg"><label>First name(s) <span class="req">*</span></label><input type="text" id="pat_fn" placeholder="First name"/></div>
+      </div>
+      <div class="r2">
+        <div class="fg"><label>Date of birth</label><input type="date" id="pat_dob"/></div>
+        <div class="fg"><label>National ID</label><input type="text" id="pat_id" placeholder="ID number"/></div>
+      </div>
+      <div class="dvd"></div>
+      <div class="fg">
+        <label>Goal of treatment <span class="req">*</span></label>
+        <div class="goal-grid">
+          <div class="goal-tile" data-goal="Curative"><span class="chk"></span><div class="gt">Curative</div><div class="gd">Best possible chance of cure</div></div>
+          <div class="goal-tile" data-goal="Disease control / Palliative"><span class="chk"></span><div class="gt">Disease control / Palliative</div><div class="gd">Control or shrink; improve quality of life</div></div>
+          <div class="goal-tile" data-goal="Adjuvant"><span class="chk"></span><div class="gt">Adjuvant</div><div class="gd">After surgery / radiotherapy</div></div>
+          <div class="goal-tile" data-goal="Neo-adjuvant"><span class="chk"></span><div class="gt">Neo-adjuvant</div><div class="gd">Before surgery / radiotherapy</div></div>
+        </div>
+      </div>
+      <div class="dvd"></div>
+      <div class="fg">
+        <label>Regimen <span class="req">*</span></label>
+        <div class="info-box">Tap a regimen — relevant side effects auto-select on the next step. Only adjust the few that don't apply.</div>
+        <div class="reg-section-label">Breast — CDK4/6 Inhibitors</div>
+        <div class="reg-grid" id="rgBreastCDK"></div>
+        <div class="reg-section-label">Breast — HER2 &amp; Chemo</div>
+        <div class="reg-grid" id="rgBreastHER"></div>
+        <div class="reg-section-label">Haematology / Immunotherapy / Supportive</div>
+        <div class="reg-grid" id="rgHaem"></div>
+        <div class="reg-section-label">GI &amp; Other</div>
+        <div class="reg-grid" id="rgOther"></div>
+        <div style="margin-top:10px"><input type="text" id="reg_custom" placeholder="Custom / unlisted regimen — type here"/></div>
+      </div>
+      <div class="r3">
+        <div class="fg"><label>Indication <span class="req">*</span></label><input type="text" id="indication" placeholder="e.g. HR+ HER2- Breast"/></div>
+        <div class="fg"><label>Frequency / cycle</label><input type="text" id="frequency" placeholder="e.g. Day 1 q28d"/></div>
+        <div class="fg"><label>No. of cycles</label><input type="text" id="num_cycles" placeholder="e.g. 6"/></div>
+      </div>
+      <div class="r2">
+        <div class="fg">
+          <label>Route(s)</label>
+          <div class="route-row">
+            <div class="rchip" onclick="this.classList.toggle('sel')">IV</div>
+            <div class="rchip" onclick="this.classList.toggle('sel')">SC</div>
+            <div class="rchip" onclick="this.classList.toggle('sel')">Oral</div>
+            <div class="rchip" onclick="this.classList.toggle('sel')">Other</div>
+          </div>
+        </div>
+        <div class="fg"><label>Location</label>
+          <select id="location"><option value="">Select…</option><option>Outpatient</option><option>Day unit / case</option><option>Inpatient</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card" id="s1">
+    <div class="card-hd"><div class="badge">2</div><div><h2>Side Effects</h2><p>Auto-selected based on regimen — adjust as needed</p></div></div>
+    <div class="card-bd">
+      <div class="se-hint" id="seHint">Select a regimen on the previous step to auto-populate.</div>
+      <div id="seAll"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card" id="s2">
+    <div class="card-hd"><div class="badge">3</div><div><h2>Your Declaration &amp; Signature</h2><p>Confirm + choose how patient signs</p></div></div>
+    <div class="card-bd">
+      <div id="declList">
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I have discussed the intended benefits and risks of the recommended treatment, including all available alternatives.</div></div>
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I have discussed potential side effects, including those that may occur in future, and that unlisted rare effects may exist.</div></div>
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I have explained what treatment involves and the patient's right to withdraw consent at any time.</div></div>
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I confirm the patient has capacity to give consent and I have explained the course of treatment and its intended benefit.</div></div>
+      </div>
+      <div class="dvd"></div>
+      <div class="r2">
+        <div class="fg"><label>Date</label><input type="date" id="hcp_date"/></div>
+        <div class="fg"><label>Protocol compliant?</label>
+          <select id="protocol" onchange="document.getElementById('pr_wrap').style.display=this.value==='no'?'block':'none'">
+            <option value="">Select…</option><option value="yes">Yes</option><option value="no">No</option><option value="na">Not available</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg" id="pr_wrap" style="display:none"><label>Reason</label><input type="text" id="pr_reason"/></div>
+      <div class="fg"><label>Notes / patient concerns</label><textarea id="hcp_notes" placeholder="Any specific concerns discussed or additional risks…"></textarea></div>
+      <div class="fg">
+        <label>Your signature</label>
+        <div class="sig-toggle"><button class="active" onclick="setSigMode('hcp','draw',this)">Draw</button><button onclick="setSigMode('hcp','type',this)">Type</button></div>
+        <div class="sig-wrap" id="hcpSigArea"><div class="sig-ph" id="hcpSigPh">Sign here</div><canvas id="hcpSigC"></canvas><span class="sig-clr" id="hcpSigClr" onclick="clearSig('hcp')">Clear</span></div>
+        <input class="sig-type" id="hcpSigType" placeholder="Type your full name as signature"/>
+      </div>
+      <div class="dvd"></div>
+      <div class="fg">
+        <label>How will the patient sign? <span class="req">*</span></label>
+        <div class="wf-row">
+          <div class="wf-btn" id="wfRemote" onclick="setWF('remote')"><div class="wf-icon">📧</div><div class="wf-title">Send to patient</div><div class="wf-sub">Email link — they sign remotely</div></div>
+          <div class="wf-btn" id="wfInPerson" onclick="setWF('inperson')"><div class="wf-icon">📱</div><div class="wf-title">Sign here now</div><div class="wf-sub">Hand device to patient</div></div>
+        </div>
+      </div>
+      <div id="remoteWrap" style="display:none">
+        <div class="fg"><label>Patient email <span class="req">*</span></label><input type="email" id="pat_email" placeholder="patient@email.com"/></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card" id="s3">
+    <div class="card-hd" style="background:linear-gradient(135deg,#37474F,#263238)"><div class="badge">4</div><div><h2>Patient Consent</h2><p>Please read carefully and sign below</p></div></div>
+    <div class="card-bd">
+      <div class="pat-summary"><h3>Your Treatment Summary</h3><div id="patSummary"></div></div>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:14px;line-height:1.6">Please read this form carefully. You have the right to change your mind at any time, including after signing. If you have questions please ask your care team before signing.</p>
+      <div>
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I have had sufficient time to consider my options and make a decision about treatment.</div></div>
+        <div class="decl" onclick="toggleDecl(this)"><div class="dbox"></div><div class="dtext">I agree to the course of treatment described above.</div></div>
+      </div>
+      <div class="dvd"></div>
+      <div class="r2">
+        <div class="fg"><label>Full name (print) <span class="req">*</span></label><input type="text" id="pat_print"/></div>
+        <div class="fg"><label>Date <span class="req">*</span></label><input type="date" id="pat_date"/></div>
+      </div>
+      <div class="fg">
+        <label>Signature <span class="req">*</span></label>
+        <div class="sig-toggle"><button class="active" onclick="setSigMode('pat','draw',this)">Draw</button><button onclick="setSigMode('pat','type',this)">Type</button></div>
+        <div class="sig-wrap" id="patSigArea"><div class="sig-ph" id="patSigPh">Sign here</div><canvas id="patSigC"></canvas><span class="sig-clr" id="patSigClr" onclick="clearSig('pat')">Clear</span></div>
+        <input class="sig-type" id="patSigType" placeholder="Type your full name as signature"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="sendingScreen"><div class="spin"></div><h2>Please wait…</h2><p id="sendMsg">Preparing form</p></div>
+  <div class="overlay" id="successScreen"><div class="success-icon">✓</div><h2>Consent Complete</h2><p id="successMsg"></p><div class="btn-row"><button class="btn btn-gold" onclick="window.print()">Print / Save PDF</button><button class="btn btn-ghost" onclick="location.reload()">New consent form</button></div></div>
+
+  <div class="nav" id="navRow">
+    <button class="btn btn-ghost" id="btnBack" onclick="nav(-1)" style="display:none">← Back</button>
+    <span></span>
+    <button class="btn btn-pri"  id="btnNext"     onclick="nav(1)">Next →</button>
+    <button class="btn btn-sub"  id="btnSend"     onclick="sendToPatient()"  style="display:none">Send to Patient →</button>
+    <button class="btn btn-sub"  id="btnHandover" onclick="handover()"       style="display:none">Hand to Patient →</button>
+    <button class="btn btn-sub"  id="btnSubmit"   onclick="submitConsent()"  style="display:none">Submit Consent ✓</button>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── Google Apps Script email ────────────────────────────────────
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxyDOinL_dw_q7JXfUIeq51mJu1Q2h0-1sS1Nj0857CdUHxjM7_Qq7yHE4vrJBYPs6RbA/exec';
+const HCP_EMAIL = ['care','cariwell.health'].join('@');
+async function sendEmail(to, subject, body){
+  try{ await fetch(GAS_URL,{method:'POST',body:JSON.stringify({to_email:to,subject,body})}); }
+  catch(e){ console.warn('Email failed',e); }
+}
+
+// ── Regimen → side effect map ──────────────────────────────────
+const REGS = [
+  // Breast — CDK4/6
+  {name:'Ribociclib + AI',    g:'rgBreastCDK',type:'HR+ Breast',   se:['Low white blood cells (infection risk)','Fatigue','Nausea','Diarrhoea','QTc prolongation','Liver enzyme changes','Hair thinning','Mouth sores']},
+  {name:'Palbociclib + AI',   g:'rgBreastCDK',type:'HR+ Breast',   se:['Low white blood cells (infection risk)','Fatigue','Nausea','Diarrhoea','Hair thinning','Mouth sores','Anaemia','Bruising / bleeding']},
+  {name:'Abemaciclib + AI',   g:'rgBreastCDK',type:'HR+ Breast',   se:['Diarrhoea','Low white blood cells (infection risk)','Fatigue','Nausea','Liver enzyme changes','Blood clot risk']},
+  {name:'Fulvestrant',        g:'rgBreastCDK',type:'HR+ Breast',   se:['Injection-site reactions','Hot flushes','Fatigue','Joint / bone pain','Nausea']},
+  {name:'Leuprolide',         g:'rgBreastCDK',type:'Hormonal',     se:['Hot flushes','Injection-site reactions','Bone density loss','Fatigue','Joint / bone pain','Mood changes','Infertility / early menopause','Unstable blood sugars']},
+  // Breast — HER2 & Chemo
+  {name:'Pertuzumab + Trastu',g:'rgBreastHER',type:'HER2+ Breast', se:['Diarrhoea','Nausea','Fatigue','Hair loss','Low white blood cells (infection risk)','Heart function changes','Allergic reaction','Peripheral neuropathy']},
+  {name:'TCH',                g:'rgBreastHER',type:'HER2+ Breast', se:['Low white blood cells (infection risk)','Fatigue','Hair loss','Nausea','Peripheral neuropathy','Heart function changes','Kidney changes','Anaemia','Allergic reaction','Mouth sores']},
+  {name:'TCHP',               g:'rgBreastHER',type:'HER2+ Breast', se:['Low white blood cells (infection risk)','Fatigue','Hair loss','Nausea','Diarrhoea','Peripheral neuropathy','Heart function changes','Kidney changes','Anaemia','Allergic reaction','Mouth sores']},
+  {name:'T-DM1 (Kadcyla)',    g:'rgBreastHER',type:'HER2+ Breast', se:['Fatigue','Nausea','Low white blood cells (infection risk)','Peripheral neuropathy','Liver enzyme changes','Bruising / bleeding','Heart function changes']},
+  {name:'Capecitabine',       g:'rgBreastHER',type:'Breast / GI',  se:['Hand-foot syndrome','Diarrhoea','Nausea','Fatigue','Mouth sores','Anaemia']},
+  {name:'Paclitaxel',         g:'rgBreastHER',type:'Various',      se:['Peripheral neuropathy','Hair loss','Nausea','Low white blood cells (infection risk)','Anaemia','Fatigue','Allergic reaction','Joint / bone pain','Mouth sores']},
+  {name:'Carbo-Taxol',        g:'rgBreastHER',type:'Various',      se:['Peripheral neuropathy','Hair loss','Nausea','Low white blood cells (infection risk)','Anaemia','Fatigue','Allergic reaction','Kidney changes']},
+  {name:'TC',                 g:'rgBreastHER',type:'Breast',       se:['Low white blood cells (infection risk)','Fatigue','Nausea','Hair loss','Peripheral neuropathy','Anaemia','Mouth sores','Allergic reaction','Kidney changes']},
+  {name:'AC-T',               g:'rgBreastHER',type:'Breast',       se:['Nausea','Fatigue','Hair loss','Low white blood cells (infection risk)','Anaemia','Mouth sores','Heart function changes','Peripheral neuropathy']},
+  // Haem / Immunotherapy
+  {name:'Pomalidomide + Dex', g:'rgHaem',     type:'Myeloma',      se:['Low white blood cells (infection risk)','Blood clot risk','Fatigue','Peripheral neuropathy','Anaemia','Constipation','Dizziness','Skin rash']},
+  {name:'Pembrolizumab',      g:'rgHaem',     type:'Immunotherapy', se:['Fatigue','Immune pneumonitis','Immune hepatitis','Immune colitis','Skin rash','Thyroid changes','Low white blood cells (infection risk)']},
+  {name:'Atezolizumab',       g:'rgHaem',     type:'Immunotherapy', se:['Fatigue','Immune pneumonitis','Immune hepatitis','Immune colitis','Skin rash','Thyroid changes','Low white blood cells (infection risk)','Infusion reactions']},
+  {name:'Bevacizumab',        g:'rgHaem',     type:'Anti-angiogenic',se:['High blood pressure','Wound healing impairment','Blood clot risk','Bleeding risk','Fatigue','Bowel perforation (rare)','Kidney changes','Protein in urine']},
+  {name:'Zoledronic acid',    g:'rgHaem',     type:'Bone agent',    se:['Flu-like symptoms','Jaw osteonecrosis risk','Kidney changes','Low calcium','Joint / bone pain','Injection-site reactions','Fatigue']},
+  {name:'Iron Infusion',      g:'rgHaem',     type:'Supportive',    se:['Infusion reactions','Allergic reaction','Low blood pressure','Nausea','Headache','Joint / bone pain','Injection-site reactions']},
+  {name:'R-CHOP',             g:'rgHaem',     type:'Lymphoma',      se:['Low white blood cells (infection risk)','Nausea','Hair loss','Fatigue','Heart function changes','Mouth sores','Anaemia','Allergic reaction']},
+  // GI & Other
+  {name:'FOLFOX',             g:'rgOther',    type:'Colorectal',    se:['Nausea','Fatigue','Peripheral neuropathy','Low white blood cells (infection risk)','Mouth sores','Diarrhoea','Hair thinning']},
+  {name:'FOLFIRI',            g:'rgOther',    type:'Colorectal',    se:['Nausea','Diarrhoea','Fatigue','Hair loss','Low white blood cells (infection risk)','Mouth sores']},
+  {name:'XELOX',              g:'rgOther',    type:'Colorectal',    se:['Peripheral neuropathy','Hand-foot syndrome','Diarrhoea','Nausea','Fatigue','Low white blood cells (infection risk)','Mouth sores','Anaemia']},
+  {name:'FOLFIRINOX',         g:'rgOther',    type:'Pancreatic/GI', se:['Low white blood cells (infection risk)','Fatigue','Nausea','Diarrhoea','Peripheral neuropathy','Hair loss','Mouth sores','Anaemia','Bruising / bleeding']},
+  {name:'Custom',             g:'rgOther',    type:'',              se:[]},
+];
+
+const SE_GROUPS = [
+  {label:'General & Blood',items:['Low white blood cells (infection risk)','Anaemia','Bruising / bleeding','Fatigue','Flu-like symptoms','Fever / sepsis risk','Bleeding risk','Low calcium']},
+  {label:'GI & Skin',items:['Nausea','Diarrhoea','Constipation','Mouth sores','Taste / appetite changes','Hair loss','Hair thinning','Skin rash','Hand-foot syndrome','Nail changes','Bowel perforation (rare)']},
+  {label:'Organ & Systemic',items:['Heart function changes','Liver enzyme changes','Kidney changes','Lung changes','QTc prolongation','Fluid retention','Blood clot risk','Tumour lysis syndrome','Unstable blood sugars','High blood pressure','Protein in urine','Wound healing impairment','Bone density loss']},
+  {label:'Neurological, Reproductive & Other',items:['Peripheral neuropathy','Hearing changes','Eye problems','Cognitive changes','Sleep difficulties','Mood changes','Allergic reaction','Infusion reactions','Joint / bone pain','Headache','Low blood pressure','Injection-site reactions','Infertility / early menopause','Foetal harm risk (use contraception)','Thyroid changes','Immune pneumonitis','Immune hepatitis','Immune colitis','Jaw osteonecrosis risk','Life-threatening complications (rare)','Hot flushes','Dizziness']},
+];
+
+let selectedReg=null, wfMode=null;
+
+// Build regimen tiles
+REGS.forEach(r=>{
+  const t=document.createElement('div'); t.className='reg-tile'; t.dataset.name=r.name;
+  t.innerHTML=`<div class="rn">${r.name}<\/div>${r.type?`<div class="rt">${r.type}<\/div>`:''}<div class="rc">✓<\/div>`;
+  t.onclick=()=>selectReg(r.name);
+  document.getElementById(r.g).appendChild(t);
+});
+
+function selectReg(name){
+  document.querySelectorAll('.reg-tile').forEach(t=>t.classList.toggle('sel',t.dataset.name===name));
+  document.getElementById('reg_custom').value='';
+  selectedReg=name;
+  const reg=REGS.find(r=>r.name===name);
+  document.querySelectorAll('.se-chip').forEach(c=>{
+    const s=reg&&reg.se.includes(c.dataset.se);
+    c.classList.toggle('sel',s); c.querySelector('.dot').textContent=s?'✓':'';
+  });
+  const hint=document.getElementById('seHint');
+  hint.textContent=reg&&reg.se.length
+    ? `✓ ${reg.se.length} side effects auto-selected for ${name}. Remove any that don't apply, or add more below.`
+    : 'No preset — select applicable side effects manually.';
+}
+
+document.getElementById('reg_custom').oninput=function(){
+  if(this.value){
+    document.querySelectorAll('.reg-tile').forEach(t=>t.classList.remove('sel'));
+    document.querySelectorAll('.se-chip').forEach(c=>{c.classList.remove('sel');c.querySelector('.dot').textContent='';});
+    selectedReg=this.value;
+    document.getElementById('seHint').textContent='Custom regimen — select applicable side effects below.';
+  }
+};
+
+// Build SE chips
+const seAll=document.getElementById('seAll');
+SE_GROUPS.forEach(g=>{
+  const lbl=document.createElement('div'); lbl.className='se-glabel'; lbl.textContent=g.label; seAll.appendChild(lbl);
+  const grid=document.createElement('div'); grid.className='se-grid'; seAll.appendChild(grid);
+  g.items.forEach(item=>{
+    const c=document.createElement('div'); c.className='se-chip'; c.dataset.se=item;
+    c.innerHTML=`<span class="dot"><\/span>${item}`;
+    c.onclick=()=>{c.classList.toggle('sel');c.querySelector('.dot').textContent=c.classList.contains('sel')?'✓':'';};
+    grid.appendChild(c);
+  });
+});
+
+// Goal tiles
+document.querySelectorAll('.goal-tile').forEach(t=>{
+  t.onclick=()=>{t.classList.toggle('sel');t.querySelector('.chk').textContent=t.classList.contains('sel')?'✓':'';};
+});
+
+function toggleDecl(el){el.classList.toggle('chk');el.querySelector('.dbox').textContent=el.classList.contains('chk')?'✓':'';}
+
+function setWF(mode){
+  wfMode=mode;
+  document.getElementById('wfRemote').classList.toggle('sel',mode==='remote');
+  document.getElementById('wfInPerson').classList.toggle('sel',mode==='inperson');
+  document.getElementById('remoteWrap').style.display=mode==='remote'?'block':'none';
+  updateNav();
+}
+
+// Profile
+function loadProfile(){
+  const p=JSON.parse(localStorage.getItem('cw_profile')||'null');
+  if(p&&p.name){
+    document.getElementById('hcpName').textContent=p.name;
+    document.getElementById('hcpSub').textContent=[p.title,p.email].filter(Boolean).join(' · ');
+    document.getElementById('hcpAvatar').textContent=p.name.charAt(0).toUpperCase();
+    document.getElementById('m_name').value=p.name;
+    document.getElementById('m_title').value=p.title||'';
+    document.getElementById('m_email').value=p.email||'';
+  }
+}
+function openModal(){document.getElementById('profileModal').classList.add('on');}
+function closeModal(){document.getElementById('profileModal').classList.remove('on');}
+function saveProfile(){
+  const p={name:document.getElementById('m_name').value.trim(),title:document.getElementById('m_title').value.trim(),email:document.getElementById('m_email').value.trim()};
+  if(!p.name){alert('Please enter your name.');return;}
+  localStorage.setItem('cw_profile',JSON.stringify(p));
+  document.getElementById('hcpName').textContent=p.name;
+  document.getElementById('hcpSub').textContent=[p.title,p.email].filter(Boolean).join(' · ');
+  document.getElementById('hcpAvatar').textContent=p.name.charAt(0).toUpperCase();
+  closeModal();
+}
+loadProfile();
+
+// Signatures
+function makeSig(cvId,areaId,phId,clrId){
+  const cv=document.getElementById(cvId),area=document.getElementById(areaId);
+  const ph=document.getElementById(phId),clr=document.getElementById(clrId);
+  const ctx=cv.getContext('2d');
+  function resize(){cv.width=area.offsetWidth;cv.height=area.offsetHeight;}
+  resize(); new ResizeObserver(resize).observe(area);
+  let drawing=false,has=false;
+  ctx.strokeStyle='#0D1F1C';ctx.lineWidth=1.8;ctx.lineCap='round';
+  function pt(e){const r=cv.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};}
+  function mark(){if(!has){has=true;ph.style.display='none';clr.style.display='block';}}
+  cv.addEventListener('mousedown',e=>{drawing=true;ctx.beginPath();const p=pt(e);ctx.moveTo(p.x,p.y);});
+  cv.addEventListener('mousemove',e=>{if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();mark();});
+  cv.addEventListener('mouseup',()=>drawing=false);
+  cv.addEventListener('mouseleave',()=>drawing=false);
+  cv.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;ctx.beginPath();const p=pt(e);ctx.moveTo(p.x,p.y);},{passive:false});
+  cv.addEventListener('touchmove',e=>{e.preventDefault();if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();mark();},{passive:false});
+  cv.addEventListener('touchend',()=>drawing=false);
+  return{clear(){ctx.clearRect(0,0,cv.width,cv.height);has=false;ph.style.display='flex';clr.style.display='none';},has(){return has;},url(){return cv.toDataURL();}};
+}
+const hcpSig=makeSig('hcpSigC','hcpSigArea','hcpSigPh','hcpSigClr');
+const patSig=makeSig('patSigC','patSigArea','patSigPh','patSigClr');
+
+const sigMode={hcp:'draw',pat:'draw'};
+function setSigMode(who,mode,btn){
+  sigMode[who]=mode;
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const area=document.getElementById(who==='hcp'?'hcpSigArea':'patSigArea');
+  const typed=document.getElementById(who==='hcp'?'hcpSigType':'patSigType');
+  area.style.display=mode==='draw'?'':'none';
+  typed.style.display=mode==='type'?'block':'none';
+}
+function sigHas(who){
+  if(sigMode[who]==='type') return document.getElementById(who==='hcp'?'hcpSigType':'patSigType').value.trim().length>0;
+  return who==='hcp'?hcpSig.has():patSig.has();
+}
+function clearSig(who){
+  (who==='hcp'?hcpSig:patSig).clear();
+  document.getElementById(who==='hcp'?'hcpSigType':'patSigType').value='';
+}
+
+// Nav
+let step=0;const STEPS=4;
+function nav(dir){
+  const next=step+dir;if(next<0||next>=STEPS)return;
+  document.getElementById(`s${step}`).classList.remove('on');
+  step=next;
+  document.getElementById(`s${step}`).classList.add('on');
+  if(step===3)buildPatSummary();
+  if(step===3&&!document.getElementById('pat_date').value) document.getElementById('pat_date').valueAsDate=new Date();
+  updateNav();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateNav(){
+  for(let i=0;i<STEPS;i++){const el=document.getElementById(`ps${i}`);el.classList.remove('done','active');if(i<step)el.classList.add('done');else if(i===step)el.classList.add('active');}
+  document.getElementById('progLbl').textContent=`Step ${step+1} of ${STEPS}`;
+  document.getElementById('btnBack').style.display=step>0?'':'none';
+  document.getElementById('btnNext').style.display=(step<STEPS-1&&step!==2)?'':'none';
+  document.getElementById('btnSend').style.display=(step===2&&wfMode==='remote')?'':'none';
+  document.getElementById('btnHandover').style.display=(step===2&&wfMode==='inperson')?'':'none';
+  document.getElementById('btnSubmit').style.display=step===3?'':'none';
+}
+
+function buildPatSummary(){
+  const sn=document.getElementById('pat_sn').value,fn=document.getElementById('pat_fn').value;
+  const goals=[...document.querySelectorAll('.goal-tile.sel')].map(t=>t.querySelector('.gt').textContent).join(', ')||'—';
+  const reg=selectedReg||'—';
+  const se=[...document.querySelectorAll('.se-chip.sel')].map(c=>c.dataset.se);
+  document.getElementById('patSummary').innerHTML=`
+    <div class="ps-row"><span class="ps-k">Patient<\/span><span class="ps-v">${fn} ${sn}<\/span><\/div>
+    <div class="ps-row"><span class="ps-k">Goal<\/span><span class="ps-v">${goals}<\/span><\/div>
+    <div class="ps-row"><span class="ps-k">Regimen<\/span><span class="ps-v">${reg}<\/span><\/div>
+    <div class="ps-row"><span class="ps-k">Indication<\/span><span class="ps-v">${document.getElementById('indication').value||'—'}<\/span><\/div>
+    <div class="ps-row"><span class="ps-k">Frequency / cycles<\/span><span class="ps-v">${document.getElementById('frequency').value||'—'} · ${document.getElementById('num_cycles').value||'—'}<\/span><\/div>
+    <div class="ps-row"><span class="ps-k">Possible side effects<\/span><span class="ps-v"><div class="ps-tags">${se.map(s=>`<span class="ps-tag">${s}<\/span>`).join('')||'None listed'}<\/div><\/span><\/div>`;
+}
+
+function collect(){
+  const p=JSON.parse(localStorage.getItem('cw_profile')||'{}');
+  return{hcp_name:p.name||'',hcp_title:p.title||'',hcp_email:p.email||'',hcp_date:document.getElementById('hcp_date').value,hcp_notes:document.getElementById('hcp_notes').value,pat_sn:document.getElementById('pat_sn').value,pat_fn:document.getElementById('pat_fn').value,pat_dob:document.getElementById('pat_dob').value,pat_id:document.getElementById('pat_id').value,pat_email:document.getElementById('pat_email').value,pat_print:document.getElementById('pat_print').value,pat_date:document.getElementById('pat_date').value,goals:[...document.querySelectorAll('.goal-tile.sel')].map(t=>t.querySelector('.gt').textContent).join(', '),regimen:selectedReg||document.getElementById('reg_custom').value,indication:document.getElementById('indication').value,frequency:document.getElementById('frequency').value,num_cycles:document.getElementById('num_cycles').value,location:document.getElementById('location').value,routes:[...document.querySelectorAll('.rchip.sel')].map(r=>r.textContent).join(', '),side_effects:[...document.querySelectorAll('.se-chip.sel')].map(c=>c.dataset.se).join('; '),protocol:document.getElementById('protocol').value};
+}
+
+function sendToPatient(){
+  const email=document.getElementById('pat_email').value.trim();
+  if(!email){alert('Please enter the patient email address.');return;}
+  if(!sigHas('hcp')){alert('Please add your signature before sending.');return;}
+  showSending('Sending consent form to patient…');
+  const d=collect();
+  const body=`Dear ${d.pat_fn} ${d.pat_sn},\n\nDr. ${d.hcp_name} has prepared your treatment consent form for ${d.regimen}.\n\nPlease review and sign at your earliest convenience.\n\nIf you have any questions please contact us at care@cariwell.health or 246-537-8483.\n\nCariWell Health Inc.`;
+  sendEmail(email,`Your Treatment Consent Form — CariWell Health`,body).then(()=>{hideSending();nav(1);}).catch(()=>{hideSending();nav(1);});
+}
+
+function handover(){
+  if(!sigHas('hcp')){alert('Please add your signature before handing over.');return;}
+  nav(1);
+}
+
+function submitConsent(){
+  if(!document.getElementById('pat_print').value.trim()){alert('Patient name required.');return;}
+  if(!sigHas('pat')){alert('Patient signature required.');return;}
+  const d=collect();
+  showSending('Submitting and emailing signed consent to your inbox…');
+  const body=`Consent Signed\n\nPatient: ${d.pat_fn} ${d.pat_sn}\nRegimen: ${d.regimen}\nIndication: ${d.indication}\nGoals: ${d.goals}\nSide effects discussed: ${d.side_effects}\nFrequency: ${d.frequency} | Cycles: ${d.num_cycles}\nLocation: ${d.location} | Routes: ${d.routes}\nHCP date: ${d.hcp_date} | Patient signed: ${d.pat_date}\nProtocol compliant: ${d.protocol}\nNotes: ${d.hcp_notes}`;
+  sendEmail(HCP_EMAIL,`Consent Signed — ${d.pat_fn} ${d.pat_sn}`,body).then(()=>{hideSending();showSuccess();}).catch(()=>{hideSending();showSuccess();});
+}
+
+function showSending(msg){document.getElementById('sendMsg').textContent=msg;document.getElementById('sendingScreen').style.display='block';document.getElementById('navRow').style.display='none';document.querySelectorAll('.card').forEach(c=>c.style.display='none');document.getElementById('progBar').style.display='none';}
+function hideSending(){document.getElementById('sendingScreen').style.display='none';document.getElementById('navRow').style.display='flex';document.querySelectorAll('.card').forEach(c=>{c.style.display=c.classList.contains('on')?'block':'none';});document.getElementById('progBar').style.display='flex';}
+function showSuccess(){document.getElementById('sendingScreen').style.display='none';document.getElementById('successScreen').style.display='block';document.getElementById('navRow').style.display='none';document.getElementById('progBar').style.display='none';document.querySelectorAll('.card').forEach(c=>c.style.display='none');document.getElemen
